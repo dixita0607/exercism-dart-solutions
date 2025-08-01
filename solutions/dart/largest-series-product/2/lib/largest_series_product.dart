@@ -1,0 +1,32 @@
+import 'dart:math';
+import 'dart:typed_data';
+
+class LargestSeriesProduct {
+  int largestProduct(String sequence, int span) {
+    if (sequence.contains(RegExp(r'[^\d]')))
+      throw ArgumentError('digits input must only contain digits');
+    if (span < 0) throw ArgumentError('span must not be negative');
+    if (span > sequence.length)
+      throw ArgumentError('span must be smaller than string length');
+    if (span == 0) return 1;
+    if (BigInt.parse(sequence) == BigInt.from(0)) return 0;
+
+    final Uint8List digits = Uint8List(sequence.length);
+    for (int i = 0; i < sequence.length; i++)
+      digits[i] = int.parse(sequence[i]);
+    int product = 0;
+
+    for (int i = 0; i <= digits.length - span; i++) {
+      int productOfWindow = 1;
+      for (int j = i; j < i + span; j++) {
+        if (digits[j] == 0) {
+          productOfWindow = 0;
+          break;
+        } else
+          productOfWindow *= digits[j];
+      }
+      product = max(product, productOfWindow);
+    }
+    return product;
+  }
+}
